@@ -1,0 +1,9 @@
+title SPA - Uusi muistiinpano
+
+note over selain: Alkutilanne: selain on kaavion (0.5) mukaisesti ladannut ja tulostanut olemassaolevat muistiinpanot sivuille
+
+selain->palvelin: HTTP POST https://fullstack-exampleapp.herokuapp.com/new_note_spa
+
+note over selain: Selain tulostaa lisätyn muistiinpanon ruudulle odottamatta vastausta palvelimelta
+
+palvelin-->selain: 201 Created, body: {"message" : "content created"}
