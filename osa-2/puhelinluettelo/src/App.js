@@ -21,7 +21,8 @@ const App = () => {
     if(persons.map(p => p.name).includes(newName)) {
       alert(`${newName} on jo luettelossa`)
     } else {
-      setPersons(persons.concat({name: newName, number: newNumber}))
+      const newPerson = {name: newName, number: newNumber}
+      axios.post('http://localhost:3001/persons', newPerson).then(success => setPersons(persons.concat(newPerson)))
     }
   }
 
