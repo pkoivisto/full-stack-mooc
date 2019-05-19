@@ -3,7 +3,7 @@ import PersonsList from './components/personsList.js'
 import PersonForm from './components/personForm.js'
 import Filter from './components/filter.js'
 
-import { getAllPersons, addPerson } from './personService.js'
+import { getAllPersons, addPerson, deletePerson } from './personService.js'
 
 const App = () => {
   const [ persons, setPersons] = useState([])
@@ -29,6 +29,12 @@ const App = () => {
 
   const filteredList = persons.filter(byNamefilter)
 
+  const deleteWithConfirm = ({id, name}) => { 
+    if (window.confirm(`Haluatko todella poistaa henkilön ${name}?`)) { 
+        deletePerson(id).then(success => setPersons(persons.filter(p => p.id !== id)))
+      }
+    }
+
   return (
     <div>
       <h2>Puhelinluettelo</h2>
@@ -36,7 +42,7 @@ const App = () => {
       <h3>Lisää uusi</h3>
       <PersonForm addPerson={doAddPerson} newName={newName} setNewName={setNewName} newNumber={newNumber} setNewNumber={setNewNumber} />
       <h2>Numerot</h2>
-      <PersonsList list={filteredList} />
+      <PersonsList list={filteredList} deletePerson={deleteWithConfirm}/>
     </div>
   )
 
