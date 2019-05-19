@@ -3,7 +3,7 @@ import PersonsList from './components/personsList.js'
 import PersonForm from './components/personForm.js'
 import Filter from './components/filter.js'
 
-import axios from 'axios'
+import { getAllPersons, addPerson } from './personService.js'
 
 const App = () => {
   const [ persons, setPersons] = useState([])
@@ -12,17 +12,16 @@ const App = () => {
   const [ filter, setFilter ] = useState('')
 
   useEffect(() => {
-    axios.get('http://localhost:3001/persons')
-      .then(response => setPersons(response.data))
+    getAllPersons().then(persons => setPersons(persons))
   }, [])
 
-  const addPerson = (ev) => {
+  const doAddPerson = (ev) => {
     ev.preventDefault()
     if(persons.map(p => p.name).includes(newName)) {
       alert(`${newName} on jo luettelossa`)
     } else {
       const newPerson = {name: newName, number: newNumber}
-      axios.post('http://localhost:3001/persons', newPerson).then(success => setPersons(persons.concat(newPerson)))
+      addPerson(newPerson).then(success => setPersons(persons.concat(newPerson)))
     }
   }
 
@@ -35,7 +34,7 @@ const App = () => {
       <h2>Puhelinluettelo</h2>
       <Filter filter={filter} setFilter={setFilter} />
       <h3>Lisää uusi</h3>
-      <PersonForm addPerson={addPerson} newName={newName} setNewName={setNewName} newNumber={newNumber} setNewNumber={setNewNumber} />
+      <PersonForm addPerson={doAddPerson} newName={newName} setNewName={setNewName} newNumber={newNumber} setNewNumber={setNewNumber} />
       <h2>Numerot</h2>
       <PersonsList list={filteredList} />
     </div>
