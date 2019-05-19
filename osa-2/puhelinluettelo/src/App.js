@@ -3,7 +3,7 @@ import PersonsList from './components/personsList.js'
 import PersonForm from './components/personForm.js'
 import Filter from './components/filter.js'
 
-import { getAllPersons, addPerson, deletePerson } from './personService.js'
+import { getAllPersons, addPerson, deletePerson, updatePerson } from './personService.js'
 
 const App = () => {
   const [ persons, setPersons] = useState([])
@@ -18,10 +18,13 @@ const App = () => {
   const doAddPerson = (ev) => {
     ev.preventDefault()
     if(persons.map(p => p.name).includes(newName)) {
-      alert(`${newName} on jo luettelossa`)
+      if (window.confirm(`${newName} on jo luettelossa, korvataanko vanha numero uudella?`)) {
+        const existing = persons.find(p => p.name.includes(newName))
+        updatePerson({...existing, number: newNumber}).then(data => setPersons(persons.filter(p => p.id !== data.id).concat(data)))
+      }
     } else {
       const newPerson = {name: newName, number: newNumber}
-      addPerson(newPerson).then(success => setPersons(persons.concat(newPerson)))
+      addPerson(newPerson).then(data => setPersons(persons.concat(data)))
     }
   }
 
