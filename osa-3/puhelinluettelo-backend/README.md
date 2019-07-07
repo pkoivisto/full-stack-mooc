@@ -1,0 +1,1 @@
+Puhelinluettelo app - backend deployed to https://sheltered-ridge-22390.herokuapp.com
