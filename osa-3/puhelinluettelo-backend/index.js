@@ -4,7 +4,25 @@ const bodyParser = require('body-parser')
 var morgan = require('morgan')
 
 app.use(bodyParser.json())
-app.use(morgan('tiny'))
+
+morgan.token('post-body', (req, res) => JSON.stringify(req.body))
+
+const morganFormatter = (tokens, req, res) => {
+    const tinyConfiguration = [
+        tokens.method(req,res),
+        tokens.url(req,res),
+        tokens.status(req,res),
+        tokens.res(req,res,'content-length'),
+        tokens['response-time'](req,res),
+        'ms'
+    ]
+    if (req.method == 'POST') {
+        tinyConfiguration.push(tokens['post-body'](req,res))
+    }
+    return tinyConfiguration.join(' ')
+}
+
+app.use(morgan(morganFormatter))
 
 let persons = [
     {
