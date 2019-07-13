@@ -41,7 +41,7 @@ app.get('/info', (req, res) => {
     })
 })
 
-app.get('/api/persons/:id', (req, res) => 
+app.get('/api/persons/:id', (req, res, next) => 
     {
         const id = req.params.id
         console.log(`getting person for id ${id}`)
@@ -53,13 +53,10 @@ app.get('/api/persons/:id', (req, res) =>
                     res.status(404).end()
                 }
             })
-            .catch(err => {
-                console.log(err)
-                res.status(400).send({error: "malformatted id"})
-            })
+            .catch(err => next(err))
     })
 
-app.delete('/api/persons/:id', (req, res) => {
+app.delete('/api/persons/:id', (req, res, next) => {
     Person.findByIdAndDelete(req.params.id)
         .then(person => {
             if (person) {
@@ -68,10 +65,10 @@ app.delete('/api/persons/:id', (req, res) => {
                 res.status(404).end()
             }
         })
-        .catch(err => res.status(400).send({error : "malformatted id"}))
-})
+        .catch(err => next(err))
+        })
 
-app.post('/api/persons/', (req, res) => {
+app.post('/api/persons/', (req, res, next) => {
     const { name, number } = req.body
     if ( !name || !number) {
         res.status(400).json({"error" : "name or number undefined"})
@@ -83,9 +80,28 @@ app.post('/api/persons/', (req, res) => {
                 const person = new Person({ name, number })
                 person.save().then(savedPerson => res.json(savedPerson.toJSON()))
             }
-        }).catch(err => console.log(err))
+        }).catch(err => next(err))
     }
 })
+
+
+const unknownEndPoint = (request, response) => {
+    response.status(404).send({error : "unknown endpoint"})
+}
+app.use(unknownEndPoint)
+
+const malformedObjectIdHandler = (error, request, response, next) => {
+    console.error(error.message)
+
+    if (error.name === 'CastError' && error.kind === 'ObjectId') {
+        return response.status(400).send({error : "malformatted id"})
+    }
+
+    next(error)
+}
+
+app.use(malformedObjectIdHandler)
+
 
 const PORT = process.env.PORT
 app.listen(PORT, () => {
