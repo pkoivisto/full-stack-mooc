@@ -17,11 +17,20 @@ const App = () => {
     getAllPersons().then(persons => setPersons(persons))
   }, [])
 
-  const notifyWithTimeout = (message, success) => {
+  const notifyWithTimeout = (message, success, timeoutInMs) => {
     setNotification({message, success})
     setTimeout(() => {
       setNotification({})
-    }, 3000)
+    }, timeoutInMs)
+  }
+
+  const renderError = (error) => {
+    const errorData = error.response.data.error
+    if (errorData) {
+      notifyWithTimeout(errorData, false, 5000)
+    } else {
+      notifyWithTimeout(error.message, false, 5000)
+    }
   }
 
   const doAddPerson = (ev) => {
@@ -29,11 +38,18 @@ const App = () => {
     if(persons.map(p => p.name).includes(newName)) {
       if (window.confirm(`${newName} on jo luettelossa, korvataanko vanha numero uudella?`)) {
         const existing = persons.find(p => p.name.includes(newName))
-        updatePerson({...existing, number: newNumber}).then(data => setPersons(persons.filter(p => p.id !== data.id).concat(data))).then(() => notifyWithTimeout(`Päivitettiin henkilön ${newName} puhelinnumero`, true))
+        updatePerson({...existing, number: newNumber})
+        .then(() => getAllPersons())
+        .then(persons => setPersons(persons))
+        .then(() => notifyWithTimeout(`Päivitettiin henkilön ${newName} puhelinnumero`, true))
+        .catch(error => renderError(error))
       }
     } else {
       const newPerson = {name: newName, number: newNumber}
-      addPerson(newPerson).then(data => setPersons(persons.concat(data))).then(() => notifyWithTimeout(`Lisättiin ${newName} puhelinluetteloon`, true))
+      addPerson(newPerson).then(() => getAllPersons())
+        .then(persons => setPersons(persons))
+        .then(() => notifyWithTimeout(`Lisättiin ${newName} puhelinluetteloon`, true))
+        .catch(error => renderError(error))
     }
   }
 
@@ -44,8 +60,8 @@ const App = () => {
   const deleteWithConfirm = ({id, name}) => { 
     if (window.confirm(`Haluatko todella poistaa henkilön ${name}?`)) { 
         deletePerson(id)
-          .then(() => notifyWithTimeout(`Poistettiin ${name} puhelinluettelosta`, true))
-          .catch(() => notifyWithTimeout(`Henkilö ${name} oli jo poistettu`, false))
+          .then(() => notifyWithTimeout(`Poistettiin ${name} puhelinluettelosta`, true, 3000))
+          .catch(() => notifyWithTimeout(`Henkilö ${name} oli jo poistettu`, false, 5000))
         // It is assumed that in case of an error the person was already removed (in another session);
         // thus, we filter out the person regardless of response code.
         setPersons(persons.filter(p => p.id !== id))

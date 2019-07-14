@@ -70,31 +70,19 @@ app.delete('/api/persons/:id', (req, res, next) => {
 
 app.post('/api/persons/', (req, res, next) => {
     const { name, number } = req.body
-    if ( !name || !number) {
-        res.status(400).json({"error" : "name or number undefined"})
-    } else {
-        Person.findOne({ name }).then(person => {
-            if (person) {
-                res.status(400).json({"error" : "name must be unique"})
-            } else {
-                const person = new Person({ name, number })
-                person.save().then(savedPerson => res.json(savedPerson.toJSON()))
-            }
-        }).catch(err => next(err))
-    }
+    const person = new Person({ name, number})
+    person.save()
+        .then(savedPerson => res.json(savedPerson.toJSON()))
+        .catch(err => next(err))
 })
 
 app.put('/api/persons/:id', (req, res, next) => {
     const { name, number } = req.body
     const id = req.params.id
-    if ( !name || !number ) {
-        res.status(400).json({"error" : "name or number undefined"})
-    } else {
-        Person.findByIdAndUpdate(id, { name, number }, { new : true })
+    Person.findByIdAndUpdate(id, { name, number }, { new : true })
           .then(updatedPerson => res.json(updatedPerson.toJSON()))
           .catch(err => next(err))
-    }
-})
+    })
 
 const unknownEndPoint = (request, response) => {
     response.status(404).send({error : "unknown endpoint"})
@@ -106,6 +94,8 @@ const malformedObjectIdHandler = (error, request, response, next) => {
 
     if (error.name === 'CastError' && error.kind === 'ObjectId') {
         return response.status(400).send({error : "malformatted id"})
+    } else if (error.name === 'ValidationError') {
+        return response.status(400).send({error : error.message})
     }
 
     next(error)
