@@ -41,14 +41,14 @@ const App = () => {
         updatePerson({...existing, number: newNumber})
         .then(() => getAllPersons())
         .then(persons => setPersons(persons))
-        .then(() => notifyWithTimeout(`Päivitettiin henkilön ${newName} puhelinnumero`, true))
+        .then(() => notifyWithTimeout(`Päivitettiin henkilön ${newName} puhelinnumero`, true, 3000))
         .catch(error => renderError(error))
       }
     } else {
       const newPerson = {name: newName, number: newNumber}
       addPerson(newPerson).then(() => getAllPersons())
         .then(persons => setPersons(persons))
-        .then(() => notifyWithTimeout(`Lisättiin ${newName} puhelinluetteloon`, true))
+        .then(() => notifyWithTimeout(`Lisättiin ${newName} puhelinluetteloon`, true, 3000))
         .catch(error => renderError(error))
     }
   }
