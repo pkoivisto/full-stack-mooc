@@ -43,6 +43,49 @@ describe('total likes', () => {
     })
 })
 
+const fiveBlogs = [
+    {
+        "_id": "5d2f7444cd308466af899165",
+        "title": "Blogautus",
+        "author": "Berit Blogaaja",
+        "url": "http://blog.it/1",
+        "likes": 13,
+        "__v": 0
+    },
+    {
+        "_id": "5d30c4a2dbe96c7744a66a11",
+        "title": "Humppa on hauskaa",
+        "author": "Hessu Humpauttaja",
+        "url": "http://blog.it/2",
+        "likes": 0,
+        "__v": 0
+    },
+    {
+        "_id": "5d31ebe01768a41377b270b7",
+        "title": "Humppa on myös hassuttelua!",
+        "author": "Hessu Humpauttaja",
+        "url": "http://blog.it/3",
+        "likes": 9,
+        "__v": 0
+    },
+    {
+        "_id": "5d31ec001768a41377b270b8",
+        "title": "Karate on tyhjä käsi?!",
+        "author": "Budo Isti",
+        "url": "http://blog.it/4",
+        "likes": 14,
+        "__v": 0
+    },
+    {
+        "_id": "5d31ed441768a41377b270b9",
+        "title": "Foobar on avain onneen",
+        "author": "Onnen koodari",
+        "url": "http://blog.it/5",
+        "likes": 13,
+        "__v": 0
+    }
+]
+
 describe('favorite blog', () => {
     test('of an empty list is undefined', () => {
         expect(listHelper.favoriteBlog([])).toEqual(undefined)
@@ -61,48 +104,22 @@ describe('favorite blog', () => {
     })
 
     test('of a list with multiple blogs is the one with most likes', () => {
-        const blogs = [
-            {
-                "_id": "5d2f7444cd308466af899165",
-                "title": "Blogautus",
-                "author": "Berit Blogaaja",
-                "url": "http://blog.it/1",
-                "likes": 13,
-                "__v": 0
-            },
-            {
-                "_id": "5d30c4a2dbe96c7744a66a11",
-                "title": "Humppa on hauskaa",
-                "author": "Hessu Humpauttaja",
-                "url": "http://blog.it/2",
-                "likes": 0,
-                "__v": 0
-            },
-            {
-                "_id": "5d31ebe01768a41377b270b7",
-                "title": "Humppa on myös hassuttelua!",
-                "author": "Hessu Humpauttaja",
-                "url": "http://blog.it/3",
-                "likes": 9,
-                "__v": 0
-            },
-            {
-                "_id": "5d31ec001768a41377b270b8",
-                "title": "Karate on tyhjä käsi?!",
-                "author": "Budo Isti",
-                "url": "http://blog.it/4",
-                "likes": 14,
-                "__v": 0
-            },
-            {
-                "_id": "5d31ed441768a41377b270b9",
-                "title": "Foobar on avain onneen",
-                "author": "Onnen koodari",
-                "url": "http://blog.it/5",
-                "likes": 13,
-                "__v": 0
-            }
-        ]
-        expect(listHelper.favoriteBlog(blogs)).toEqual(blogs[3])
+
+        expect(listHelper.favoriteBlog(fiveBlogs)).toEqual(fiveBlogs[3])
+    })
+})
+
+describe('most blogs', () => {
+    test('of an empty list is undefined', () => {
+        expect(listHelper.mostBlogs([])).toEqual({author: undefined, blogs: 0})
+    })
+
+    test('of a list with just one blog returns the author for that one blog', () => {
+        const author = "Kikka Kirjailija"
+        expect(listHelper.mostBlogs([{ author }])).toEqual({author: author, blogs: 1})
+    })
+
+    test('of a list with multiple blogs returns the author with most entries', () => {
+        expect(listHelper.mostBlogs(fiveBlogs)).toEqual({author: "Hessu Humpauttaja", blogs: 2})
     })
 })
