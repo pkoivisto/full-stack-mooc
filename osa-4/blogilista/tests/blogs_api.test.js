@@ -51,6 +51,14 @@ test('a new blog entry must have a title and an url', async () => {
   expect(noUrlResponse.status).toBe(400)
 })
 
+test('DELETE /api/blogs/:id removes the blog post referenced by :id', async () => {
+  const response = await api.delete('/api/blogs/' + helper.initialBlogs[4]._id)
+  expect(response.status).toBe(204)
+
+  const blogs = await api.get('/api/blogs')
+  expect(blogs.body.length).toBe(helper.initialBlogs.length - 1)
+})
+
 afterAll(() => {
   mongoose.connection.close()
 })
