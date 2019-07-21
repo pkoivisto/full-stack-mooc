@@ -1,3 +1,5 @@
+var _ = require('lodash')
+
 const dummy = (blogs) => {
     return 1
 }
@@ -37,6 +39,24 @@ const mostBlogs = (blogs) => {
     return max
 }
 
+const mostLikes = (blogs) => {
+
+    const likesByAuthor = blogs.reduce((acc, val) => {
+        if (!acc[val.author]) {
+            acc[val.author] = 0
+        }
+        acc[val.author] += val.likes
+        return acc
+    }, {})
+
+    const pairs = _.toPairs(likesByAuthor)
+    if (pairs.length === 0) {
+        return undefined
+    }
+    const maxAuthor = _.maxBy(pairs, '1')
+    return {author : maxAuthor[0], likes : maxAuthor[1]}
+}
+
 module.exports = {
-    dummy, totalLikes, favoriteBlog, mostBlogs
+    dummy, totalLikes, favoriteBlog, mostBlogs, mostLikes
 }

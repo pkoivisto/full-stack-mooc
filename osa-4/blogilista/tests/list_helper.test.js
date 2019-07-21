@@ -123,3 +123,17 @@ describe('most blogs', () => {
         expect(listHelper.mostBlogs(fiveBlogs)).toEqual({author: "Hessu Humpauttaja", blogs: 2})
     })
 })
+
+describe('most likes', () => {
+    test('of an empty list is undefined', (() => {
+        expect(listHelper.mostLikes([])).toEqual(undefined)
+    })),
+
+    test('of a list with just one blog returns the author and number of likes for that single blog', () => {
+        expect(listHelper.mostLikes([{author : "foo", likes : 13}])).toEqual({author : "foo", likes : 13})
+    }),
+
+    test('of a list with multiple blogs returns the author with most total likes', () => {
+        expect(listHelper.mostLikes(fiveBlogs)).toEqual({author : "Budo Isti", likes : 14})
+    })
+})
