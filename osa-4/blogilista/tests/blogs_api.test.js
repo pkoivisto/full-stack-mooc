@@ -36,6 +36,12 @@ test('adding a blog entry leads to the number of entries increasing by one', asy
   expect(blogs.body.length).toBe(helper.initialBlogs.length + 1)
 })
 
+test('a blog post has by default 0 likes, unless specified otherwise', async () => {
+  const postData = {'title' : 'Unliked..', 'author' : 'Tester', 'url' : 'http://notfou.nd'}
+  const response = await api.post('/api/blogs').send(postData)
+  expect(response.body.likes).toEqual(0)
+})
+
 afterAll(() => {
   mongoose.connection.close()
 })
