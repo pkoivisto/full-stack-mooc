@@ -59,6 +59,12 @@ test('DELETE /api/blogs/:id removes the blog post referenced by :id', async () =
   expect(blogs.body.length).toBe(helper.initialBlogs.length - 1)
 })
 
+test('PUT /api/blogs/:id updates the blog post with given id', async () => {
+  const {title, author, url, likes, _id} = helper.initialBlogs[0]
+  const response = await api.put('/api/blogs/' + _id).send({likes: likes + 1})
+  expect(response.body).toEqual(expect.objectContaining({ _id, title, author, url, likes: likes + 1}))
+})
+
 afterAll(() => {
   mongoose.connection.close()
 })
