@@ -42,6 +42,15 @@ test('a blog post has by default 0 likes, unless specified otherwise', async () 
   expect(response.body.likes).toEqual(0)
 })
 
+test('a new blog entry must have a title and an url', async () => {
+  const {title, author, url} = {'title' : 'A title', 'author' : 'F. Aker', 'url' : 'http://a.fakeo.ne'}
+  const noTitleResponse = await api.post('/api/blogs').send({author, url})
+  expect(noTitleResponse.status).toBe(400)
+
+  const noUrlResponse = await api.post('/api/blogs').send({title, author})
+  expect(noUrlResponse.status).toBe(400)
+})
+
 afterAll(() => {
   mongoose.connection.close()
 })
