@@ -16,4 +16,13 @@ const createNew = async ({ blog, user }) => {
   }
 }
 
-export default { getAll, createNew }
+const updateBlog = async ({ id, updatedContents }) => {
+  try {
+    const response = await axios.put(`${baseUrl}/${id}`, updatedContents)
+    return response
+  } catch (exception) {
+    return { error : exception.message }
+  }
+}
+
+export default { getAll, createNew, updateBlog }

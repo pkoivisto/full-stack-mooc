@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import blogService from '../services/blogs'
 
-const BlogForm = ({user,notifyCallback }) => {
+const BlogForm = ({user, notificationCallback }) => {
 
   const [title, setTitle] = useState('')
   const [author, setAuthor] = useState('')
@@ -11,9 +11,9 @@ const BlogForm = ({user,notifyCallback }) => {
     e.preventDefault()
     const response = await blogService.createNew({ user, blog: {title, author, url} })
     if (response.error) {
-      notifyCallback({type : 'ERROR', message : response.error})
+      notificationCallback({type : 'ERROR', message : response.error})
     } else {
-      notifyCallback({type : 'SUCCESS', message : `Added new blog "${title}" by ${author}`})
+      notificationCallback({type : 'SUCCESS', message : `Added new blog "${title}" by ${author}`})
     }
   }
 

@@ -60,9 +60,9 @@ const App = () => {
       </div>
       <p/>
       <Togglable label="New blog entry">
-        <BlogForm user={user} notifyCallback={setNotification}/>
+        <BlogForm user={user} notificationCallback={setNotification}/>
       </Togglable>
-      { blogs.map((blog, idx) => <Blog key={blog.id} blog={blog} style={idx % 2 === 0 ? evenRowStyle : oddRowStyle}/>) }
+      { blogs.map((blog, idx) => <Blog key={blog.id} blog={blog} style={idx % 2 === 0 ? evenRowStyle : oddRowStyle} notificationCallback={setNotification} />) }
       </div>
     )
   }

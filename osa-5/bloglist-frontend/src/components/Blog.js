@@ -1,8 +1,24 @@
 import React, { useState } from 'react'
-const Blog = ({ blog, style}) => {
+import blogService from '../services/blogs'
+
+const Blog = ({ blog, style, notificationCallback }) => {
   const [fullDetailsVisible, setFullDetailsVisible] = useState(false)
   const toggleFullDetails = () => setFullDetailsVisible(!fullDetailsVisible)
   const showWhenFullDetailsVisible = { display : ( fullDetailsVisible ? '' : 'none' ) }
+
+  const likeBlog = async () => {
+    try {
+      const updatedContents = { author : blog.author, url : blog.url, user : blog.user.id, likes : blog.likes + 1 }
+      const response = await blogService.updateBlog({ id : blog.id, updatedContents })
+      if (response.error) {
+        notificationCallback({ type : 'ERROR', message : response.error})
+      } else {
+        notificationCallback({ type : 'SUCCESS', message : `Liked ${blog.title} by ${blog.author}!` })
+      }
+    } catch (exception) {
+      notificationCallback({ type : 'ERROR', message : exception.message })
+    }
+  }
 
   return (
     <div style={style}>
@@ -11,7 +27,7 @@ const Blog = ({ blog, style}) => {
       </div>
       <div style={showWhenFullDetailsVisible}>
         <a href={blog.url}>{blog.url}</a>
-        <div>{blog.likes} likes <button onClick={() => console.log('clicked!')}>like</button></div>
+        <div>{blog.likes} likes <button onClick={ likeBlog }>like</button></div>
         <div>added by {blog.user.name}</div>
       </div>
     </div>
