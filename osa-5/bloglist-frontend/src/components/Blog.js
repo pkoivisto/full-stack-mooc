@@ -20,6 +20,17 @@ const Blog = ({ blog, style, notificationCallback }) => {
     }
   }
 
+  const deleteBlog = async () => {
+    if (window.confirm(`Remove blog ${blog.title} by ${blog.author}?`)) {
+      const response = await blogService.deleteBlog({id : blog.id})
+      if (response.error) {
+        notificationCallback({ type : 'ERROR', message : response.error})
+      } else {
+        notificationCallback({ type : 'SUCCESS', message : `Deleted ${blog.title} by ${blog.author}.`})
+      }
+    }
+  }
+
   return (
     <div style={style}>
       <div onClick={toggleFullDetails}>
@@ -29,6 +40,7 @@ const Blog = ({ blog, style, notificationCallback }) => {
         <a href={blog.url}>{blog.url}</a>
         <div>{blog.likes} likes <button onClick={ likeBlog }>like</button></div>
         <div>added by {blog.user.name}</div>
+        <div><button onClick={deleteBlog}>Delete</button></div>
       </div>
     </div>
   )
