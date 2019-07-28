@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import loginService from '../services/login'
 
-const LoginForm = ({ setUser }) => {
+const LoginForm = ({ setUser, onError }) => {
     const [username, setUsername] = useState('')
     const [password, setPassword] = useState('')
   
@@ -11,7 +11,7 @@ const LoginForm = ({ setUser }) => {
         const user = await loginService.login({username, password})
         setUser(user)
       } catch (exception) {
-        console.log(exception)
+        onError('Wrong username or password!')
       }
     }
     
