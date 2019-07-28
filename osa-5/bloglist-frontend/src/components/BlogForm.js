@@ -19,7 +19,7 @@ const BlogForm = ({user,notifyCallback }) => {
 
   return (
     <form onSubmit={createBlog}>
-      <h2>Create a new blog</h2>
+      <h2>Add a new blog entry</h2>
       <table>
         <tbody>
           <tr>

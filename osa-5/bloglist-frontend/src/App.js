@@ -3,6 +3,7 @@ import blogService from './services/blogs'
 import Blog from './components/Blog'
 import LoginForm from './components/LoginForm'
 import BlogForm from './components/BlogForm'
+import Togglable from './components/Togglable'
 import Notification from './components/Notification'
 import localStorage from './services/localStorage'
 
@@ -39,6 +40,9 @@ const App = () => {
     setUser(user)
   }
 
+  const evenRowStyle = { "backgroundColor" : "#ffffff" }
+  const oddRowStyle = { "backgroundColor" : "#f0f0f0" }
+
   if (!user) {
     return (
       <div>
@@ -55,8 +59,10 @@ const App = () => {
         {user.name} is logged in <button onClick={() => { localStorage.removeStoredUser(); setUser(null) }}>log out</button>
       </div>
       <p/>
-      <BlogForm user={user} notifyCallback={setNotification}/>
-      { blogs.map(blog => <Blog key={blog.id} blog={blog}/>) }
+      <Togglable label="New blog entry">
+        <BlogForm user={user} notifyCallback={setNotification}/>
+      </Togglable>
+      { blogs.map((blog, idx) => <Blog key={blog.id} blog={blog} style={idx % 2 === 0 ? evenRowStyle : oddRowStyle}/>) }
       </div>
     )
   }
