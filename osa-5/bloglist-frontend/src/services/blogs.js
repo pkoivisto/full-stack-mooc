@@ -8,7 +8,7 @@ const getAll = () => {
 
 const createNew = async ({ blog, user }) => {
   try {
-    const headersConfig = { headers : { Authorization : 'bearer ' + user.token }}
+    const headersConfig = { headers : { Authorization : 'bearer ' + user.token } }
     const response = await axios.post(baseUrl, blog, headersConfig)
     return response
   } catch (exception) {

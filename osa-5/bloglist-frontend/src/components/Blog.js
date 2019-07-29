@@ -11,7 +11,7 @@ const Blog = ({ blog, style, notificationCallback, loggedInUser }) => {
       const updatedContents = { author : blog.author, url : blog.url, user : blog.user.id, likes : blog.likes + 1 }
       const response = await blogService.updateBlog({ id : blog.id, updatedContents })
       if (response.error) {
-        notificationCallback({ type : 'ERROR', message : response.error})
+        notificationCallback({ type : 'ERROR', message : response.error })
       } else {
         notificationCallback({ type : 'SUCCESS', message : `Liked ${blog.title} by ${blog.author}!` })
       }
@@ -22,11 +22,11 @@ const Blog = ({ blog, style, notificationCallback, loggedInUser }) => {
 
   const deleteBlog = async () => {
     if (window.confirm(`Remove blog ${blog.title} by ${blog.author}?`)) {
-      const response = await blogService.deleteBlog({id : blog.id})
+      const response = await blogService.deleteBlog({ id : blog.id })
       if (response.error) {
-        notificationCallback({ type : 'ERROR', message : response.error})
+        notificationCallback({ type : 'ERROR', message : response.error })
       } else {
-        notificationCallback({ type : 'SUCCESS', message : `Deleted ${blog.title} by ${blog.author}.`})
+        notificationCallback({ type : 'SUCCESS', message : `Deleted ${blog.title} by ${blog.author}.` })
       }
     }
   }

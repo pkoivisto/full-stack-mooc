@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, { useState, useEffect } from 'react'
 import blogService from './services/blogs'
 import Blog from './components/Blog'
 import LoginForm from './components/LoginForm'
@@ -15,7 +15,7 @@ const App = () => {
   useEffect(() => {
     const storedUser = localStorage.getStoredUser()
     if (storedUser) {
-     setUser(storedUser)
+      setUser(storedUser)
     }
   }, [])
 
@@ -40,8 +40,8 @@ const App = () => {
     setUser(user)
   }
 
-  const evenRowStyle = { "backgroundColor" : "#ffffff" }
-  const oddRowStyle = { "backgroundColor" : "#f0f0f0" }
+  const evenRowStyle = { 'backgroundColor' : '#ffffff' }
+  const oddRowStyle = { 'backgroundColor' : '#f0f0f0' }
 
   if (!user) {
     return (
@@ -49,23 +49,23 @@ const App = () => {
         <Notification {...notification}/>
         <LoginForm setUser={handleLogin} onError={(message) => setNotification({ type : 'ERROR', message })}/>
       </div>
-    );
+    )
   } else {
     return (
       <div>
-      <h2>Blogs</h2>
-      <Notification {...notification} />
-      <div>
-        {user.name} is logged in <button onClick={() => { localStorage.removeStoredUser(); setUser(null) }}>log out</button>
-      </div>
-      <p/>
-      <Togglable label="New blog entry">
-        <BlogForm user={user} notificationCallback={setNotification}/>
-      </Togglable>
-      { blogs.map((blog, idx) => <Blog key={blog.id} blog={blog} style={idx % 2 === 0 ? evenRowStyle : oddRowStyle} notificationCallback={setNotification} loggedInUser={user.username}/>) }
+        <h2>Blogs</h2>
+        <Notification {...notification} />
+        <div>
+          {user.name} is logged in <button onClick={() => { localStorage.removeStoredUser(); setUser(null) }}>log out</button>
+        </div>
+        <p/>
+        <Togglable label="New blog entry">
+          <BlogForm user={user} notificationCallback={setNotification}/>
+        </Togglable>
+        { blogs.map((blog, idx) => <Blog key={blog.id} blog={blog} style={idx % 2 === 0 ? evenRowStyle : oddRowStyle} notificationCallback={setNotification} loggedInUser={user.username}/>) }
       </div>
     )
   }
 }
 
-export default App;
+export default App
