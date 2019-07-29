@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
 import blogService from '../services/blogs'
+import PropTypes from 'prop-types'
 
 const BlogForm = ({ user, notificationCallback }) => {
 
@@ -38,6 +39,11 @@ const BlogForm = ({ user, notificationCallback }) => {
       </table>
       <input type="submit" />
     </form>)
+}
+
+BlogForm.propTypes = {
+  user: PropTypes.object.isRequired,
+  notificationCallback: PropTypes.func.isRequired
 }
 
 export default BlogForm
