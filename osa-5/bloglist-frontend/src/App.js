@@ -62,7 +62,7 @@ const App = () => {
       <Togglable label="New blog entry">
         <BlogForm user={user} notificationCallback={setNotification}/>
       </Togglable>
-      { blogs.map((blog, idx) => <Blog key={blog.id} blog={blog} style={idx % 2 === 0 ? evenRowStyle : oddRowStyle} notificationCallback={setNotification} />) }
+      { blogs.map((blog, idx) => <Blog key={blog.id} blog={blog} style={idx % 2 === 0 ? evenRowStyle : oddRowStyle} notificationCallback={setNotification} loggedInUser={user.username}/>) }
       </div>
     )
   }

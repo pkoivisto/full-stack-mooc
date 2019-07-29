@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import blogService from '../services/blogs'
 
-const Blog = ({ blog, style, notificationCallback }) => {
+const Blog = ({ blog, style, notificationCallback, loggedInUser }) => {
   const [fullDetailsVisible, setFullDetailsVisible] = useState(false)
   const toggleFullDetails = () => setFullDetailsVisible(!fullDetailsVisible)
   const showWhenFullDetailsVisible = { display : ( fullDetailsVisible ? '' : 'none' ) }
@@ -40,7 +40,7 @@ const Blog = ({ blog, style, notificationCallback }) => {
         <a href={blog.url}>{blog.url}</a>
         <div>{blog.likes} likes <button onClick={ likeBlog }>like</button></div>
         <div>added by {blog.user.name}</div>
-        <div><button onClick={deleteBlog}>Delete</button></div>
+        { blog.user.username === loggedInUser ? <div><button onClick={deleteBlog}>Delete</button></div> : null }
       </div>
     </div>
   )
