@@ -3,8 +3,10 @@ import loginService from '../services/login'
 import { useField } from '../hooks'
 
 const LoginForm = ({ setUser, onError }) => {
-  const username = useField('text')
-  const password = useField('text')
+  // eslint-disable-next-line no-unused-vars
+  const { reset : resetU, ...username } = useField('text')
+  // eslint-disable-next-line no-unused-vars
+  const { reset : resetP, ...password } = useField('password')
 
   const doLogin = async (e) => {
     e.preventDefault()

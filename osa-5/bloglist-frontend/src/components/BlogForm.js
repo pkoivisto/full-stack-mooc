@@ -5,9 +5,12 @@ import { useField } from '../hooks'
 
 const BlogForm = ({ user, notificationCallback }) => {
 
-  const title = useField('text')
-  const author = useField('text')
-  const url = useField('text')
+  // eslint-disable-next-line no-unused-vars
+  const { reset: resetT, ...title } = useField('text')
+  // eslint-disable-next-line no-unused-vars
+  const { reset: resetA, ...author } = useField('text')
+  // eslint-disable-next-line no-unused-vars
+  const { reset: resetU, ...url } = useField('text')
 
   const createBlog = async (e) => {
     e.preventDefault()
