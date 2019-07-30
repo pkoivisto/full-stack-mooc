@@ -33,10 +33,10 @@ const Blog = ({ blog, style, notificationCallback, loggedInUser }) => {
 
   return (
     <div style={style}>
-      <div onClick={toggleFullDetails}>
+      <div className='header' onClick={toggleFullDetails}>
         {blog.title} {blog.author}
       </div>
-      <div style={showWhenFullDetailsVisible}>
+      <div className='fullDetails' style={showWhenFullDetailsVisible}>
         <a href={blog.url}>{blog.url}</a>
         <div>{blog.likes} likes <button onClick={ likeBlog }>like</button></div>
         <div>added by {blog.user.name}</div>
