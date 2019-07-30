@@ -1,14 +1,15 @@
-import React, { useState } from 'react'
+import React from 'react'
 import loginService from '../services/login'
+import { useField } from '../hooks'
 
 const LoginForm = ({ setUser, onError }) => {
-  const [username, setUsername] = useState('')
-  const [password, setPassword] = useState('')
+  const username = useField('text')
+  const password = useField('text')
 
   const doLogin = async (e) => {
     e.preventDefault()
     try {
-      const user = await loginService.login({ username, password })
+      const user = await loginService.login({ username : username.value, password : password.value })
       setUser(user)
     } catch (exception) {
       onError('Wrong username or password!')
@@ -19,11 +20,11 @@ const LoginForm = ({ setUser, onError }) => {
     <h2>Login to application</h2>
     <div>
         Username
-      <input type="text" value={username} onChange={(e) => setUsername(e.target.value)}/>
+      <input {...username} />
     </div>
     <div>
         Password
-      <input type="password" value={password} onChange={(e) => setPassword(e.target.value)}/>
+      <input {...password} />
     </div>
     <button type="submit">Login</button>
   </form>
