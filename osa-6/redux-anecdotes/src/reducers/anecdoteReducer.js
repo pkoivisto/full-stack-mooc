@@ -26,6 +26,8 @@ const reducer = (state = initialState, action) => {
       const votedAnecdote = {...state[anecdoteIndex], votes: state[anecdoteIndex].votes + 1}
       const newState = state.slice(0,anecdoteIndex).concat(votedAnecdote).concat(state.slice(anecdoteIndex+1, state.length))
       return newState
+    case 'CREATE':
+      return [...state, asObject(action.content)]
     default:
       return state
   }
