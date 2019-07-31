@@ -1,36 +1,13 @@
 import React from 'react';
+import AnecdoteForm from './components/AnecdoteForm'
+import AnecdoteList from './components/AnecdoteList'
 
-const App = (props) => {
-  const anecdotes = props.store.getState().sort((a,b) => a.votes > b.votes ? -1 : 1)
-
-  const vote = (id) => {
-    props.store.dispatch({type: 'VOTE', id})
-  }
-
-  const createAnecdote = (event) => {
-    event.preventDefault()
-    props.store.dispatch({type: 'CREATE', content: event.target.anecdote.value})
-  }
+const App = ({store}) => {
 
   return (
     <div>
-      <h2>Anecdotes</h2>
-      {anecdotes.map(anecdote =>
-        <div key={anecdote.id}>
-          <div>
-            {anecdote.content}
-          </div>
-          <div>
-            has {anecdote.votes}
-            <button onClick={() => vote(anecdote.id)}>vote</button>
-          </div>
-        </div>
-      )}
-      <h2>create new</h2>
-      <form onSubmit={createAnecdote}>
-        <div><input name="anecdote" /></div>
-        <button type="submit">create</button>
-      </form>
+      <AnecdoteList store={ store } />
+      <AnecdoteForm store={ store } />
     </div>
   )
 }
