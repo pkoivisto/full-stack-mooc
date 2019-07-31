@@ -5,6 +5,7 @@ const App = (props) => {
 
   const vote = (id) => {
     console.log('vote', id)
+    props.store.dispatch({type: 'VOTE', id})
   }
 
   return (

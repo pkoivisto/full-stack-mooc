@@ -20,10 +20,15 @@ const asObject = (anecdote) => {
 const initialState = anecdotesAtStart.map(asObject)
 
 const reducer = (state = initialState, action) => {
-  console.log('state now: ', state)
-  console.log('action', action)
-
-  return state
+  switch (action.type) {
+    case 'VOTE':
+      const anecdoteIndex = state.findIndex(val => val.id === action.id)
+      const votedAnecdote = {...state[anecdoteIndex], votes: state[anecdoteIndex].votes + 1}
+      const newState = state.slice(0,anecdoteIndex).concat(votedAnecdote).concat(state.slice(anecdoteIndex+1, state.length))
+      return newState
+    default:
+      return state
+  }
 }
 
 export default reducer
