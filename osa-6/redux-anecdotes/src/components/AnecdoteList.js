@@ -3,7 +3,8 @@ import { vote } from '../reducers/anecdoteReducer'
 import { addNotification, removeNotification } from '../reducers/notificationReducer'
 
 const AnecdoteList = ({ store }) => {
-  const anecdotes = store.getState().anecdotes.sort((a,b) => a.votes > b.votes ? -1 : 1)
+  const filter = store.getState().filter
+  const anecdotes = store.getState().anecdotes.filter(({ content }) => content.includes(filter)).sort((a,b) => a.votes > b.votes ? -1 : 1)
 
   const voteAnecdote = ({ id }) =>  {
     store.dispatch(vote(id))
@@ -14,7 +15,6 @@ const AnecdoteList = ({ store }) => {
 
   return (
     <div>
-      <h2>Anecdotes</h2>
       {anecdotes.map(anecdote =>
         <div key={anecdote.id}>
           <div>
