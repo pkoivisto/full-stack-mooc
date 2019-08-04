@@ -3,8 +3,7 @@ import { vote } from '../reducers/anecdoteReducer'
 import { addNotification, removeNotification } from '../reducers/notificationReducer'
 import { connect } from 'react-redux'
 
-const AnecdoteList = ({ anecdotes, filter, vote, addNotification, removeNotification }) => {
-  const displayedAnecdotes = anecdotes.filter(({ content }) => content.includes(filter)).sort((a,b) => a.votes > b.votes ? -1 : 1)
+const AnecdoteList = ({ anecdotes, vote, addNotification, removeNotification }) => {
 
   const voteAnecdote = ({ id }) =>  {
     vote(id)
@@ -14,7 +13,7 @@ const AnecdoteList = ({ anecdotes, filter, vote, addNotification, removeNotifica
 
   return (
     <div>
-      {displayedAnecdotes.map(anecdote =>
+      {anecdotes.map(anecdote =>
         <div key={anecdote.id}>
           <div>
             {anecdote.content}
@@ -28,9 +27,12 @@ const AnecdoteList = ({ anecdotes, filter, vote, addNotification, removeNotifica
   )
 }
 
+const anecdotesToDisplay = (anecdotes, filterBy, sortBy) => anecdotes.filter(filterBy).sort(sortBy)
+
 const mapStateToProps = (state) => {
-  return { anecdotes : state.anecdotes, filter : state.filter }
+  return { anecdotes : anecdotesToDisplay(state.anecdotes, ({ content }) => content.includes(state.filter), (a,b) => a.votes > b.votes ? -1 : 1) }
 }
+
 const mapDispatchToPros = { vote, addNotification, removeNotification }
 const ConnectedAnecdoteList = connect(mapStateToProps, mapDispatchToPros)(AnecdoteList)
 
