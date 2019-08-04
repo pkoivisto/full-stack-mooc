@@ -4,7 +4,7 @@ const anecdoteReducer = (state = [], action) => {
   switch (action.type) {
     case 'VOTE_ANECDOTE':
       const anecdoteIndex = state.findIndex(val => val.id === action.id)
-      const votedAnecdote = {...state[anecdoteIndex], votes: state[anecdoteIndex].votes + 1}
+      const votedAnecdote = {...state[anecdoteIndex], votes: action.newVotes}
       const newState = state.slice(0,anecdoteIndex).concat(votedAnecdote).concat(state.slice(anecdoteIndex+1, state.length))
       return newState
     case 'CREATE_ANECDOTE':
@@ -17,8 +17,13 @@ const anecdoteReducer = (state = [], action) => {
   }
 }
 
-export const vote = (id) => {
-  return { type: 'VOTE_ANECDOTE', id }
+export const vote = ({ id, content, votes }) => {
+  return async (dispatch) => {
+    const incrementedVotes = votes + 1
+    await anecdoteService.update({ id, content, votes: incrementedVotes })
+    const response = dispatch({ type : 'VOTE_ANECDOTE', id, newVotes: incrementedVotes })
+    return response
+  }
 }
 
 export const createAnecdote = (anecdote) => {

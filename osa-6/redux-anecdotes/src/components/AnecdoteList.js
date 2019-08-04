@@ -5,8 +5,8 @@ import { connect } from 'react-redux'
 
 const AnecdoteList = ({ anecdotes, vote, addNotification, removeNotification }) => {
 
-  const voteAnecdote = ({ id }) =>  {
-    vote(id)
+  const voteAnecdote = ({ id, content, votes }) =>  {
+    vote({ id, content, votes })
     const dispatchedNotification = addNotification({ contents: `You voted '${anecdotes.find(val => val.id === id).content}'` })
     setTimeout(() => removeNotification({ id : dispatchedNotification.id }), 5000)
   }
