@@ -1,14 +1,17 @@
+/* eslint-disable no-unused-vars */
 import React, { useState } from 'react'
+import { BrowserRouter as Router, Route, Link, withRouter } from 'react-router-dom'
 
-const Menu = () => {
+const Menu = ({ notification }) => {
   const padding = {
     paddingRight: 5
   }
   return (
     <div>
-      <a href='#' style={padding}>anecdotes</a>
-      <a href='#' style={padding}>create new</a>
-      <a href='#' style={padding}>about</a>
+      <Link to='/' style={padding}>anecdotes</Link>
+      <Link to='/create' style={padding}>create new</Link>
+      <Link to='/about' style={padding}>about</Link>
+      <div>{notification}</div>
     </div>
   )
 }
@@ -17,8 +20,16 @@ const AnecdoteList = ({ anecdotes }) => (
   <div>
     <h2>Anecdotes</h2>
     <ul>
-      {anecdotes.map(anecdote => <li key={anecdote.id} >{anecdote.content}</li>)}
+      {anecdotes.map(anecdote => <li key={anecdote.id}><Link to={`/anecdotes/${anecdote.id}`}>{anecdote.content}</Link></li>)}
     </ul>
+  </div>
+)
+
+const Anecdote = ({ anecdote }) => (
+  <div>
+    <h2>{anecdote.content} by {anecdote.author}</h2>
+    <div>has {anecdote.votes} votes</div>
+    <div>for more info see <a href={anecdote.info}>{anecdote.info}</a></div>
   </div>
 )
 
@@ -44,7 +55,7 @@ const Footer = () => (
   </div>
 )
 
-const CreateNew = (props) => {
+const CreateNewNoHistory = (props) => {
   const [content, setContent] = useState('')
   const [author, setAuthor] = useState('')
   const [info, setInfo] = useState('')
@@ -58,6 +69,7 @@ const CreateNew = (props) => {
       info,
       votes: 0
     })
+    props.history.push('/')
   }
 
   return (
@@ -80,8 +92,9 @@ const CreateNew = (props) => {
       </form>
     </div>
   )
-
 }
+
+const CreateNew = withRouter(CreateNewNoHistory)
 
 const App = () => {
   const [anecdotes, setAnecdotes] = useState([
@@ -106,6 +119,8 @@ const App = () => {
   const addNew = (anecdote) => {
     anecdote.id = (Math.random() * 10000).toFixed(0)
     setAnecdotes(anecdotes.concat(anecdote))
+    setNotification(`a new anecdote ${anecdote.content} created!`)
+    setTimeout(() => setNotification(''), 10000)
   }
 
   const anecdoteById = (id) =>
@@ -123,14 +138,17 @@ const App = () => {
   }
 
   return (
-    <div>
-      <h1>Software anecdotes</h1>
-      <Menu />
-      <AnecdoteList anecdotes={anecdotes} />
-      <About />
-      <CreateNew addNew={addNew} />
-      <Footer />
-    </div>
+    <Router>
+      <div>
+        <h1>Software anecdotes</h1>
+        <Menu notification={notification}/>
+        <Route exact path='/' render={() => <AnecdoteList anecdotes={anecdotes}/>} />
+        <Route path='/anecdotes/:id' render={({ match }) => <Anecdote anecdote={anecdoteById(match.params.id)} />}/>
+        <Route path='/about' render={() => <About />} />
+        <Route path='/create' render={() => <CreateNew addNew={addNew} />}></Route>
+        <Footer />
+      </div>
+    </Router>
   )
 }
 
