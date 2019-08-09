@@ -1,14 +1,14 @@
-import React, { useState } from 'react'
+import React from 'react'
 import blogService from '../services/blogs'
 import { connect } from 'react-redux'
 import { newNotification } from '../reducers/notificationReducer'
 import { updateExisting, deleteBlog } from '../reducers/blogsReducer'
 
-const Blog = ({ blog, style, loggedInUser, newNotification, deleteOne, updateExisting }) => {
-  const [fullDetailsVisible, setFullDetailsVisible] = useState(false)
-  const toggleFullDetails = () => setFullDetailsVisible(!fullDetailsVisible)
-  const showWhenFullDetailsVisible = { display : ( fullDetailsVisible ? '' : 'none' ) }
-
+const Blog = ({ id, deleteOne, currentUser, blogs }) => {
+  const blog = blogs.find(val => val.id === id)
+  if (!blog) {
+    return <div />
+  }
   const likeBlog = async () => {
     try {
       const updatedContents = { author : blog.author, url : blog.url, user : blog.user.id, likes : blog.likes + 1 }
@@ -37,20 +37,24 @@ const Blog = ({ blog, style, loggedInUser, newNotification, deleteOne, updateExi
   }
 
   return (
-    <div style={style}>
-      <div className='header' onClick={toggleFullDetails}>
-        {blog.title} {blog.author}
-      </div>
-      <div className='fullDetails' style={showWhenFullDetailsVisible}>
+    <div>
+      <h2>{blog.title} {blog.author}</h2>
+      <div>
         <a href={blog.url}>{blog.url}</a>
         <div>{blog.likes} likes <button onClick={ likeBlog }>like</button></div>
         <div>added by {blog.user.name}</div>
-        { blog.user.username === loggedInUser ? <div><button onClick={ deleteBlog }>Delete</button></div> : null }
+        { blog.user.username === currentUser.username ? <div><button onClick={ deleteBlog }>Delete</button></div> : null }
       </div>
     </div>
   )
 }
 
+const mapStateToProps = ({ blogs, users }) => {
+  return {
+    blogs,
+    currentUser : users.currentUser
+  }
+}
 const mapDispatchToProps = { newNotification, deleteOne : deleteBlog, updateExisting }
 
-export default connect(null, mapDispatchToProps)(Blog)
+export default connect(mapStateToProps, mapDispatchToProps)(Blog)

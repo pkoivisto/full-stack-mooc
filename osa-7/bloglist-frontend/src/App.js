@@ -74,9 +74,10 @@ const App = ({ userData, notification, initUsers, loginUser, blogs, initBlogs })
                 <BlogForm user={user}/>
               </Togglable>
               <h3>Blogs</h3>
-              { sortedBlogs.map((blog, idx) => <Blog key={blog.id} blog={blog} style={idx % 2 === 0 ? evenRowStyle : oddRowStyle} loggedInUser={user.username}/>) }
+              { sortedBlogs.map((blog, idx) => <div key={blog.id} style={idx % 2 === 0 ? evenRowStyle : oddRowStyle}><Link to={'/blogs/' + blog.id}>{blog.title} / {blog.author}</Link></div>) }
             </div>)
           }/>
+          <Route path="/blogs/:id" render={({ match }) => <Blog id={match.params.id} />} />
         </div>
       </Router>
     )
