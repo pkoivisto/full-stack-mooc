@@ -44,6 +44,8 @@ const App = ({ userData, notification, initUsers, loginUser }) => {
   const evenRowStyle = { 'backgroundColor' : '#ffffff' }
   const oddRowStyle = { 'backgroundColor' : '#f0f0f0' }
 
+  const padding = { padding : '5px' }
+  const outline = { border : '2px dashed grey', padding : '3px' }
   if (!user) {
     return (
       <div>
@@ -55,22 +57,23 @@ const App = ({ userData, notification, initUsers, loginUser }) => {
     return (
       <Router>
         <div>
-          <div>
-            <Link to="/users">Users</Link>
-          </div>
-          <h2>Blogs</h2>
-          <Notification {...notification} />
-          <div>
+          <div style={outline}>
+            <Link style={padding} to="/users">Users</Link>
+            <Link style={padding} to="/blogs">Blogs</Link>
             {user.name} is logged in <button onClick={() => { localStorage.removeStoredUser(); loginUser(null) }}>log out</button>
           </div>
+          <h2>Blog app</h2>
+          <Notification {...notification} />
           <p/>
           <Route exact path="/users" render={() => <Users />}/>
           <Route path="/users/:id" render={({ match }) => <User id={match.params.id} />}/>
-          <Route exact path="/" render={() => (
-            <div><Togglable label="New blog entry">
-              <BlogForm user={user}/>
-            </Togglable>
-            { blogs.map((blog, idx) => <Blog key={blog.id} blog={blog} style={idx % 2 === 0 ? evenRowStyle : oddRowStyle} loggedInUser={user.username}/>) }
+          <Route exact path="/blogs" render={() => (
+            <div>
+              <Togglable label="New blog entry">
+                <BlogForm user={user}/>
+              </Togglable>
+              <h3>Blogs</h3>
+              { blogs.map((blog, idx) => <Blog key={blog.id} blog={blog} style={idx % 2 === 0 ? evenRowStyle : oddRowStyle} loggedInUser={user.username}/>) }
             </div>)
           }/>
         </div>
