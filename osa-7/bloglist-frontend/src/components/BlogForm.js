@@ -2,8 +2,10 @@ import React from 'react'
 import blogService from '../services/blogs'
 import PropTypes from 'prop-types'
 import { useField } from '../hooks'
+import { connect } from 'react-redux'
+import { newNotification } from '../reducers/notificationReducer'
 
-const BlogForm = ({ user, notificationCallback }) => {
+const BlogForm = ({ user, newNotification }) => {
 
   // eslint-disable-next-line no-unused-vars
   const { reset: resetT, ...title } = useField('text')
@@ -16,9 +18,9 @@ const BlogForm = ({ user, notificationCallback }) => {
     e.preventDefault()
     const response = await blogService.createNew({ user, blog: { title: title.value, author: author.value, url: url.value } })
     if (response.error) {
-      notificationCallback({ type : 'ERROR', message : response.error })
+      newNotification({ success : false, content : response.error })
     } else {
-      notificationCallback({ type : 'SUCCESS', message : `Added new blog "${title.value}" by ${author.value}` })
+      newNotification({ success : true, content : `Added new blog "${title.value}" by ${author.value}` })
     }
   }
 
@@ -47,7 +49,10 @@ const BlogForm = ({ user, notificationCallback }) => {
 
 BlogForm.propTypes = {
   user: PropTypes.object.isRequired,
-  notificationCallback: PropTypes.func.isRequired
+  newNotification: PropTypes.func.isRequired
 }
 
-export default BlogForm
+const mapDispatchToProps = { newNotification }
+const ConnectedBlogForm = connect(null, mapDispatchToProps)(BlogForm)
+
+export default ConnectedBlogForm

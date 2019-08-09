@@ -1,8 +1,10 @@
 import React from 'react'
 import loginService from '../services/login'
 import { useField } from '../hooks'
+import { connect } from 'react-redux'
+import { newNotification } from '../reducers/notificationReducer'
 
-const LoginForm = ({ setUser, onError }) => {
+const LoginForm = ({ setUser, newNotification }) => {
   // eslint-disable-next-line no-unused-vars
   const { reset : resetU, ...username } = useField('text')
   // eslint-disable-next-line no-unused-vars
@@ -14,7 +16,7 @@ const LoginForm = ({ setUser, onError }) => {
       const user = await loginService.login({ username : username.value, password : password.value })
       setUser(user)
     } catch (exception) {
-      onError('Wrong username or password!')
+      newNotification({ success: false, content: 'Wrong username or password!' })
     }
   }
 
@@ -32,4 +34,4 @@ const LoginForm = ({ setUser, onError }) => {
   </form>
 }
 
-export default LoginForm
+export default connect(null, { newNotification })(LoginForm)

@@ -7,10 +7,11 @@ import Togglable from './components/Togglable'
 import Notification from './components/Notification'
 import localStorage from './services/localStorage'
 
-const App = () => {
+import { connect } from 'react-redux'
+
+const App = ({ notification }) => {
   const [user, setUser] = useState(null)
   const [blogs, setBlogs] = useState([])
-  const [notification, setNotification] = useState(null)
 
   useEffect(() => {
     const storedUser = localStorage.getStoredUser()
@@ -29,12 +30,6 @@ const App = () => {
     fetchBlogs()
   }, [user])
 
-  useEffect(() => {
-    if (notification) {
-      setTimeout(() => setNotification(null), 3000)
-    }
-  }, [notification])
-
   const handleLogin = (user) => {
     localStorage.setStoredUser(user)
     setUser(user)
@@ -47,7 +42,7 @@ const App = () => {
     return (
       <div>
         <Notification {...notification}/>
-        <LoginForm setUser={handleLogin} onError={(message) => setNotification({ type : 'ERROR', message })}/>
+        <LoginForm setUser={handleLogin} />
       </div>
     )
   } else {
@@ -60,12 +55,18 @@ const App = () => {
         </div>
         <p/>
         <Togglable label="New blog entry">
-          <BlogForm user={user} notificationCallback={setNotification}/>
+          <BlogForm user={user}/>
         </Togglable>
-        { blogs.map((blog, idx) => <Blog key={blog.id} blog={blog} style={idx % 2 === 0 ? evenRowStyle : oddRowStyle} notificationCallback={setNotification} loggedInUser={user.username}/>) }
+        { blogs.map((blog, idx) => <Blog key={blog.id} blog={blog} style={idx % 2 === 0 ? evenRowStyle : oddRowStyle} loggedInUser={user.username}/>) }
       </div>
     )
   }
 }
 
-export default App
+const mapStateToProps = ({ notification }) => {
+  return { notification }
+}
+
+const ConnectedApp = connect(mapStateToProps)(App)
+
+export default ConnectedApp
