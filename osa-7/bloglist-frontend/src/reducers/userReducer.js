@@ -1,5 +1,4 @@
 const userReducer = (state = { users : [], currentUser : null }, action) => {
-  console.log(state, action)
   switch (action.type) {
   case 'INIT_USERS':
     return { users : action.users, currentUser : state.currentUser }

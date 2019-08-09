@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useEffect } from 'react'
 import blogService from './services/blogs'
 import userService from './services/users'
 import Blog from './components/Blog'
@@ -11,10 +11,10 @@ import Notification from './components/Notification'
 import localStorage from './services/localStorage'
 import { connect } from 'react-redux'
 import { initUsers, loginUser } from './reducers/userReducer'
+import { initBlogs } from './reducers/blogsReducer'
 import { BrowserRouter as Router, Route, Link } from 'react-router-dom'
 
-const App = ({ userData, notification, initUsers, loginUser }) => {
-  const [blogs, setBlogs] = useState([])
+const App = ({ userData, notification, initUsers, loginUser, blogs, initBlogs }) => {
   const user = userData.currentUser
   useEffect(() => {
     const initializeUsers = async () => {
@@ -35,12 +35,13 @@ const App = ({ userData, notification, initUsers, loginUser }) => {
     async function fetchBlogs() {
       if (user) {
         const blogs = await blogService.getAll()
-        setBlogs(blogs.sort((a,b) => a.likes > b.likes ? -1 : 1))
+        initBlogs(blogs)
       }
     }
     fetchBlogs()
-  }, [user])
+  }, [user, initBlogs])
 
+  const sortedBlogs = blogs.sort((a,b) => a.likes > b.likes ? -1 : 1)
   const evenRowStyle = { 'backgroundColor' : '#ffffff' }
   const oddRowStyle = { 'backgroundColor' : '#f0f0f0' }
 
@@ -73,7 +74,7 @@ const App = ({ userData, notification, initUsers, loginUser }) => {
                 <BlogForm user={user}/>
               </Togglable>
               <h3>Blogs</h3>
-              { blogs.map((blog, idx) => <Blog key={blog.id} blog={blog} style={idx % 2 === 0 ? evenRowStyle : oddRowStyle} loggedInUser={user.username}/>) }
+              { sortedBlogs.map((blog, idx) => <Blog key={blog.id} blog={blog} style={idx % 2 === 0 ? evenRowStyle : oddRowStyle} loggedInUser={user.username}/>) }
             </div>)
           }/>
         </div>
@@ -82,11 +83,11 @@ const App = ({ userData, notification, initUsers, loginUser }) => {
   }
 }
 
-const mapStateToProps = ({ notification, users }) => {
-  return { notification, userData : users }
+const mapStateToProps = ({ notification, users, blogs }) => {
+  return { notification, userData : users, blogs }
 }
 
-const mapDispatchToProps = { initUsers, loginUser }
+const mapDispatchToProps = { initUsers, loginUser, initBlogs }
 const ConnectedApp = connect(mapStateToProps, mapDispatchToProps)(App)
 
 export default ConnectedApp

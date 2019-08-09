@@ -4,8 +4,9 @@ import PropTypes from 'prop-types'
 import { useField } from '../hooks'
 import { connect } from 'react-redux'
 import { newNotification } from '../reducers/notificationReducer'
+import { createNew } from '../reducers/blogsReducer'
 
-const BlogForm = ({ user, newNotification }) => {
+const BlogForm = ({ user, newNotification, createNew }) => {
 
   // eslint-disable-next-line no-unused-vars
   const { reset: resetT, ...title } = useField('text')
@@ -21,6 +22,7 @@ const BlogForm = ({ user, newNotification }) => {
       newNotification({ success : false, content : response.error })
     } else {
       newNotification({ success : true, content : `Added new blog "${title.value}" by ${author.value}` })
+      createNew(response.data)
     }
   }
 
@@ -52,7 +54,7 @@ BlogForm.propTypes = {
   newNotification: PropTypes.func.isRequired
 }
 
-const mapDispatchToProps = { newNotification }
+const mapDispatchToProps = { newNotification, createNew }
 const ConnectedBlogForm = connect(null, mapDispatchToProps)(BlogForm)
 
 export default ConnectedBlogForm
