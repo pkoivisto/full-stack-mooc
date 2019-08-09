@@ -1,16 +1,12 @@
 import React, { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
-import userService from '../services/users'
+import { connect } from 'react-redux'
 
-const Users = () => {
+const Users = ({ userData }) => {
   const [users, setUsers] = useState([])
   useEffect(() => {
-    const getAll = async () => {
-      const response = await userService.getAll()
-      setUsers(response)
-    }
-    getAll()
-  }, [])
+    setUsers(userData.users)
+  }, [userData])
 
   return (
     <div>
@@ -30,4 +26,10 @@ const Users = () => {
   )
 }
 
-export default Users
+const mapStateToProps = ({ users }) => {
+  return {
+    userData : users
+  }
+}
+
+export default connect(mapStateToProps)(Users)

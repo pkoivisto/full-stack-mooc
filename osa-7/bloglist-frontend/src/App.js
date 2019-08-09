@@ -10,13 +10,12 @@ import User from './components/User'
 import Notification from './components/Notification'
 import localStorage from './services/localStorage'
 import { connect } from 'react-redux'
-import { initUsers } from './reducers/userReducer'
+import { initUsers, loginUser } from './reducers/userReducer'
 import { BrowserRouter as Router, Route, Link } from 'react-router-dom'
 
-const App = ({ notification, initUsers }) => {
-  const [user, setUser] = useState(null)
+const App = ({ userData, notification, initUsers, loginUser }) => {
   const [blogs, setBlogs] = useState([])
-
+  const user = userData.currentUser
   useEffect(() => {
     const initializeUsers = async () => {
       const response = await userService.getAll()
@@ -28,9 +27,9 @@ const App = ({ notification, initUsers }) => {
   useEffect(() => {
     const storedUser = localStorage.getStoredUser()
     if (storedUser) {
-      setUser(storedUser)
+      loginUser(storedUser)
     }
-  }, [])
+  }, [loginUser])
 
   useEffect(() => {
     async function fetchBlogs() {
@@ -42,11 +41,6 @@ const App = ({ notification, initUsers }) => {
     fetchBlogs()
   }, [user])
 
-  const handleLogin = (user) => {
-    localStorage.setStoredUser(user)
-    setUser(user)
-  }
-
   const evenRowStyle = { 'backgroundColor' : '#ffffff' }
   const oddRowStyle = { 'backgroundColor' : '#f0f0f0' }
 
@@ -54,7 +48,7 @@ const App = ({ notification, initUsers }) => {
     return (
       <div>
         <Notification {...notification}/>
-        <LoginForm setUser={handleLogin} />
+        <LoginForm />
       </div>
     )
   } else {
@@ -67,7 +61,7 @@ const App = ({ notification, initUsers }) => {
           <h2>Blogs</h2>
           <Notification {...notification} />
           <div>
-            {user.name} is logged in <button onClick={() => { localStorage.removeStoredUser(); setUser(null) }}>log out</button>
+            {user.name} is logged in <button onClick={() => { localStorage.removeStoredUser(); loginUser(null) }}>log out</button>
           </div>
           <p/>
           <Route exact path="/users" render={() => <Users />}/>
@@ -85,11 +79,11 @@ const App = ({ notification, initUsers }) => {
   }
 }
 
-const mapStateToProps = ({ notification }) => {
-  return { notification }
+const mapStateToProps = ({ notification, users }) => {
+  return { notification, userData : users }
 }
 
-const mapDispatchToProps = { initUsers }
+const mapDispatchToProps = { initUsers, loginUser }
 const ConnectedApp = connect(mapStateToProps, mapDispatchToProps)(App)
 
 export default ConnectedApp
