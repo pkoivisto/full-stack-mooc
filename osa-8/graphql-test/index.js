@@ -102,7 +102,7 @@ const typeDefs = gql`
     hello: String!,
     bookCount: Int!,
     authorCount: Int!,
-    allBooks: [Book!]!,
+    allBooks(author: String): [Book!]!,
     allAuthors: [AuthorBookCount!]!
   }
 `
@@ -112,7 +112,12 @@ const resolvers = {
     hello: () => { return "world" },
     bookCount: () => books.length,
     authorCount: () => new Set(books.map(b => b.author)).size,
-    allBooks: () => books,
+    allBooks: (root, args) => {
+      if (!args.author) {
+        return books
+      }
+      return books.filter(book => book.author === args.author)
+    },
     allAuthors: () => {
       const booksByAuthor = {}
       authors.map(author => author.name).forEach(name => booksByAuthor[name] = books.map(book => book.author).filter(author => author === name).length)
