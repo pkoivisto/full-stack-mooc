@@ -1,4 +1,5 @@
 const { ApolloServer, gql } = require('apollo-server')
+const uuid = require('uuid/v1')
 
 let authors = [
   {
@@ -93,8 +94,10 @@ const typeDefs = gql`
     genres: [String!]!
   }
 
-  type AuthorBookCount {
+  type Author {
+    id: ID!,
     name: String!,
+    born: Int,
     bookCount: Int!
   }
 
@@ -103,7 +106,16 @@ const typeDefs = gql`
     bookCount: Int!,
     authorCount: Int!,
     allBooks(author: String, genre: String): [Book!]!,
-    allAuthors: [AuthorBookCount!]!
+    allAuthors: [Author!]!
+  }
+
+  type Mutation {
+    addBook(
+      title: String!
+      author: String
+      published: Int!
+      genres: [String!]!
+    ): Book
   }
 `
 
@@ -128,7 +140,22 @@ const resolvers = {
     allAuthors: () => {
       const booksByAuthor = {}
       authors.map(author => author.name).forEach(name => booksByAuthor[name] = books.map(book => book.author).filter(author => author === name).length)
-      return authors.map(author => author.name).map(name => { return { name, bookCount: booksByAuthor[name] } })
+      return authors.map(author => { return {...author, bookCount: booksByAuthor[author.name] } })
+    },
+  },
+  Author: {
+    bookCount: ({ bookCount }) => {
+      return bookCount
+    }
+  },
+  Mutation: {
+    addBook: (root, args) => {
+      const book = {...args, id: uuid()}
+      books = books.concat(book)
+      if (!authors.find(author => author.name === args.author)) {
+        authors.push({ name : args.author, id : uuid()})
+      }
+      return book
     }
   }
 }
