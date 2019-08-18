@@ -1,10 +1,19 @@
 import React, { useState } from 'react'
 
-const Authors = (props) => {
-  if (!props.show) {
+const Authors = ({ show, authors, updateAuthor }) => {
+  const [name, setName] = useState('')
+  const [born, setBorn] = useState('')
+
+  if (!show || !authors) {
     return null
   }
-  const authors = []
+
+  const doUpdateAuthor = async (event) => {
+    event.preventDefault()
+    await updateAuthor({ variables : { name, born }})
+    setName('')
+    setBorn('')
+  }
 
   return (
     <div>
@@ -29,6 +38,12 @@ const Authors = (props) => {
           )}
         </tbody>
       </table>
+      <h3>Set birthyear</h3>
+      <form onSubmit={doUpdateAuthor}>
+        <div>name <input type="text" value={name} onChange={(e) => setName(e.target.value)}/></div>
+        <div>born <input type="number" value={born} onChange={(e) => setBorn(parseInt(e.target.value))}/></div>
+        <button type="sumit">Update</button>
+      </form>
 
     </div>
   )
