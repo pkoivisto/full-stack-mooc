@@ -76,7 +76,7 @@ const resolvers = {
   },
   Author: {
     bookCount: (props) => {
-      return Book.count({ author : props._id })
+      return Book.countDocuments({ author : props._id })
     }
   },
   Mutation: {
