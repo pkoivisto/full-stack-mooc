@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 
-const Authors = ({ show, authors, updateAuthor }) => {
+const Authors = ({ show, authors, loggedIn, updateAuthor }) => {
   const [name, setName] = useState('')
   const [born, setBorn] = useState('')
 
@@ -38,12 +38,17 @@ const Authors = ({ show, authors, updateAuthor }) => {
           )}
         </tbody>
       </table>
-      <h3>Set birthyear</h3>
-      <form onSubmit={doUpdateAuthor}>
-        <div>name <input type="text" value={name} onChange={(e) => setName(e.target.value)}/></div>
-        <div>born <input type="number" value={born} onChange={(e) => setBorn(parseInt(e.target.value))}/></div>
-        <button type="sumit">Update</button>
-      </form>
+      { loggedIn && (
+        <div>
+          <h3>Set birthyear</h3>
+          <form onSubmit={doUpdateAuthor}>
+            <div>name <input type="text" value={name} onChange={(e) => setName(e.target.value)}/></div>
+            <div>born <input type="number" value={born} onChange={(e) => setBorn(parseInt(e.target.value))}/></div>
+            <button type="sumit">Update</button>
+          </form>
+        </div>
+      )}
+
 
     </div>
   )
