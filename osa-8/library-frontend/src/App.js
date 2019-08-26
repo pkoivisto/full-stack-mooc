@@ -33,7 +33,7 @@ const ALL_AUTHORS = gql`
 
 const ALL_BOOKS = gql`
  {
-   allBooks { author { name, born, bookCount }, title, published }
+   allBooks { author { name, born, bookCount }, title, published, genres }
  }
 `
 
