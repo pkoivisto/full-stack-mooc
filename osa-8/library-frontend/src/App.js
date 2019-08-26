@@ -3,6 +3,7 @@ import Authors from './components/Authors'
 import Books from './components/Books'
 import NewBook from './components/NewBook'
 import LoginForm from './components/LoginForm'
+import Recommendations from './components/Recommendations'
 import { useQuery, useMutation, useApolloClient } from '@apollo/react-hooks'
 import { gql } from 'apollo-boost'
 
@@ -36,6 +37,11 @@ const ALL_BOOKS = gql`
    allBooks { author { name, born, bookCount }, title, published, genres }
  }
 `
+const ME = gql`
+ {
+   me { username, favoriteGenre }
+ }
+`
 
 const LOCALSTORAGE_TOKEN_KEY = 'library-user-token'
 
@@ -47,6 +53,7 @@ const App = () => {
   const [addBook] = useMutation(ADD_BOOK, { refetchQueries : [{ query : ALL_AUTHORS }, { query : ALL_BOOKS }]})
   const [updateAuthor] = useMutation(EDIT_AUTHOR, { refetchQueries : [ { query : ALL_AUTHORS }]})
   const [login] = useMutation(LOGIN)
+  const userQuery = useQuery(ME)
 
   useEffect(() => {
     const storedToken = localStorage.getItem(LOCALSTORAGE_TOKEN_KEY)
@@ -67,6 +74,7 @@ const App = () => {
         <button onClick={() => setPage('books')}>books</button>
         { !token && <button onClick={() => setPage('login')}>login</button> }
         { token && <button onClick={() => setPage('add')}>add book</button> }
+        { token && <button onClick={() => setPage('recommend')}>recommend</button> }
         { token && <button onClick={logout}>logout</button> }
       </div>
 
@@ -92,6 +100,12 @@ const App = () => {
       <NewBook
         show={page === 'add'}
         addBook={addBook}
+      />
+
+      <Recommendations
+        show={page === 'recommend'}
+        books={booksQuery.data.allBooks}
+        user={userQuery.data.me}
       />
 
     </div>
