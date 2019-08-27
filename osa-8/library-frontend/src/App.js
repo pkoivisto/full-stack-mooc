@@ -4,7 +4,7 @@ import Books from './components/Books'
 import NewBook from './components/NewBook'
 import LoginForm from './components/LoginForm'
 import Recommendations from './components/Recommendations'
-import { useQuery, useMutation, useApolloClient } from '@apollo/react-hooks'
+import { useQuery, useMutation, useApolloClient, useSubscription } from '@apollo/react-hooks'
 import { gql } from 'apollo-boost'
 
 
@@ -31,16 +31,34 @@ const ALL_AUTHORS = gql`
   allAuthors { name, bookCount, born }
 }
 `
+const BOOK_DETAILS = gql`
+ fragment BookDetails on Book {
+   author { name, born, bookCount },
+   title,
+   published,
+   genres
+ }
+`
 
 const ALL_BOOKS = gql`
  {
-   allBooks { author { name, born, bookCount }, title, published, genres }
+   allBooks { ...BookDetails }
  }
+ ${BOOK_DETAILS}
 `
 const ME = gql`
  {
    me { username, favoriteGenre }
  }
+`
+
+const BOOK_ADDED = gql`
+subscription {
+  bookAdded {
+    ...BookDetails
+  }
+}
+ ${BOOK_DETAILS}
 `
 
 const LOCALSTORAGE_TOKEN_KEY = 'library-user-token'
@@ -66,6 +84,12 @@ const App = () => {
     setToken(null)
     localStorage.removeItem(LOCALSTORAGE_TOKEN_KEY)
   }
+
+  useSubscription(BOOK_ADDED, {
+    onSubscriptionData: ({ subscriptionData }) => {
+      console.log(subscriptionData)
+    }
+  })
 
   return (
     <div>
