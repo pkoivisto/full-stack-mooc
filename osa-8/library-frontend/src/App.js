@@ -28,15 +28,16 @@ const LOGIN = gql`
 
 const ALL_AUTHORS = gql`
 {
-  allAuthors { name, bookCount, born }
+  allAuthors { name, bookCount, born, id }
 }
 `
 const BOOK_DETAILS = gql`
  fragment BookDetails on Book {
-   author { name, born, bookCount },
+   author { name, born, bookCount, id },
    title,
    published,
-   genres
+   genres,
+   id
  }
 `
 
@@ -85,9 +86,27 @@ const App = () => {
     localStorage.removeItem(LOCALSTORAGE_TOKEN_KEY)
   }
 
+  const addBookToCache = (addedBook) => {
+    const includedIn = (set, object) => set.map(o => o.id).includes(object.id)
+
+    const allBooksQueryCache = client.readQuery({ query : ALL_BOOKS })
+    const allAuthorsQueryCache = client.readQuery({ query : ALL_AUTHORS })
+
+    if (!includedIn(allBooksQueryCache.allBooks, addedBook)) {
+      const updatedBooksCache = allBooksQueryCache.allBooks.concat(addedBook)
+      client.writeQuery({ query : ALL_BOOKS, data : { allBooks : updatedBooksCache } })
+    }
+
+    if (!includedIn(allAuthorsQueryCache.allAuthors, addedBook.author)) {
+      const updatedAuthorsCache = allAuthorsQueryCache.allAuthors.concat(addedBook.author)
+      client.writeQuery({ query : ALL_AUTHORS, data : { allAuthors : updatedAuthorsCache }})
+    }
+  }
+
   useSubscription(BOOK_ADDED, {
     onSubscriptionData: ({ subscriptionData }) => {
-      console.log(subscriptionData)
+      const addedBook = subscriptionData.data.bookAdded
+      addBookToCache(addedBook)
     }
   })
 

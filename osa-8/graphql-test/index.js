@@ -120,6 +120,9 @@ const resolvers = {
       book.author = author
       try {
         book.save()
+        // To ensure we return an up to date bookCount value as part of the book's author data
+        const authorBookCount = await Book.countDocuments({ author : author._id})
+        book.author.bookCount = authorBookCount
         pubsub.publish('BOOK_ADDED', { bookAdded : book})
         return book
       } catch (error) {
